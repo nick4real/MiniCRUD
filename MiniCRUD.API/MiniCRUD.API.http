@@ -1,0 +1,6 @@
+@MiniCRUD.API_HostAddress = http://localhost:5089
+
+GET {{MiniCRUD.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
