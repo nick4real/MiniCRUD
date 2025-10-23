@@ -1,0 +1,50 @@
+﻿@page "/users"
+@inject HttpClientService _client;
+
+<PageTitle>Users</PageTitle>
+
+<h1>Users</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (_users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Login</th>
+                <th>Password</th>
+                <th>Avatar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in _users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Login</td>
+                    <td>@user.PasswordHash</td>
+                    <td>
+                        <img src="@user.AvatarUrl" alt="avatar" style="width:64px" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<User> _users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await _client.GetAsync<List<User>>("api/users");
+        if (response.IsSuccess)
+            _users = response.Data!;
+    }
+}
