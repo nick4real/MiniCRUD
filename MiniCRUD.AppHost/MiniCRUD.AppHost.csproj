@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MiniCRUD.API\MiniCRUD.API.csproj" />
+    <ProjectReference Include="..\MiniCRUD.Gateway\MiniCRUD.Gateway.csproj" />
     <ProjectReference Include="..\MiniCRUD.WebApp\MiniCRUD.WebApp.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36603.0 d17.14
+VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniCRUD.API", "MiniCRUD.API\MiniCRUD.API.csproj", "{1E613BCA-A01E-2AFD-1982-B9668D73E97E}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniCRUD.WebApp", "MiniCRUD.WebApp\MiniCRUD.WebApp.csproj", "{0862CF96-29D0-F69F-F705-9D49012445C3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniCRUD.Domain", "MiniCRUD.Domain\MiniCRUD.Domain.csproj", "{52D2E5D9-1865-4F30-A282-2C3759348F90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniCRUD.Gateway", "MiniCRUD.Gateway\MiniCRUD.Gateway.csproj", "{155769C2-0743-D236-2629-579C73842922}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{52D2E5D9-1865-4F30-A282-2C3759348F90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52D2E5D9-1865-4F30-A282-2C3759348F90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52D2E5D9-1865-4F30-A282-2C3759348F90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{155769C2-0743-D236-2629-579C73842922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{155769C2-0743-D236-2629-579C73842922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{155769C2-0743-D236-2629-579C73842922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{155769C2-0743-D236-2629-579C73842922}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

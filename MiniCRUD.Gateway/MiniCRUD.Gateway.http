@@ -1,0 +1,6 @@
+@MiniCRUD.Gateway_HostAddress = http://localhost:5091
+
+GET {{MiniCRUD.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
