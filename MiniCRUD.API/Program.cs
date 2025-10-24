@@ -22,6 +22,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
+
 app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
