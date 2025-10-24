@@ -43,7 +43,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await _client.GetAsync<List<User>>("api/users");
+        var response = await _client.GetAsync<List<User>>("users");
         if (response.IsSuccess)
             _users = response.Data!;
     }

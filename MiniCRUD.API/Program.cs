@@ -40,7 +40,12 @@ app.MapControllers();
 await using (var serviceScope = app.Services.CreateAsyncScope())
 await using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>())
 {
-    await dbContext.Database.EnsureCreatedAsync();
+    var executionStrategy = dbContext.Database.CreateExecutionStrategy();
+
+    await executionStrategy.ExecuteAsync(async () =>
+    {
+        await dbContext.Database.EnsureCreatedAsync();
+    });
 }
 
 app.Run();
