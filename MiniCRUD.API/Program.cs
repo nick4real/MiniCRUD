@@ -24,6 +24,28 @@ var app = builder.Build();
 
 app.UseForwardedHeaders();
 
+if (app.Environment.IsProduction())
+{
+    app.Use(async (context, next) =>
+    {
+        // Fix for scheme
+        var forwardedProto = context.Request.Headers["X-Forwarded-Proto"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(forwardedProto))
+        {
+            context.Request.Scheme = forwardedProto;
+        }
+
+        // Fix for host
+        var forwardedHost = context.Request.Headers["X-Forwarded-Host"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(forwardedHost))
+        {
+            context.Request.Host = new HostString(forwardedHost);
+        }
+
+        await next();
+    });
+}
+
 app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
