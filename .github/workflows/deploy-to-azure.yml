@@ -1,0 +1,100 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  api-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: MiniCRUD.API
+
+      - name: Build
+        run: dotnet build --configuration Release
+        working-directory: MiniCRUD.API
+
+      - name: Publish
+        run: dotnet publish -c Release -o ./publish
+        working-directory: MiniCRUD.API
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: minicrud-api
+          publish-profile: ${{ secrets.AZURE_API_PUBLISH_PROFILE }}
+          package: ./MiniCRUD.API/publish
+
+  webapp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: MiniCRUD.WebApp
+
+      - name: Build
+        run: dotnet build --configuration Release
+        working-directory: MiniCRUD.WebApp
+
+      - name: Publish
+        run: dotnet publish -c Release -o ./publish
+        working-directory: MiniCRUD.WebApp
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: minicrud-webapp
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./MiniCRUD.WebApp/publish
+
+  gateway-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: MiniCRUD.Gateway
+
+      - name: Build
+        run: dotnet build --configuration Release
+        working-directory: MiniCRUD.Gateway
+
+      - name: Publish
+        run: dotnet publish -c Release -o ./publish
+        working-directory: MiniCRUD.Gateway
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: minicrud-gateway
+          publish-profile: ${{ secrets.AZURE_GATEWAY_PUBLISH_PROFILE }}
+          package: ./MiniCRUD.Gateway/publish
