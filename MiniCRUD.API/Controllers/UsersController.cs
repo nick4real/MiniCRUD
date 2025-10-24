@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiniCRUD.API.Infrastructure;
+using MiniCRUD.API.Services;
 using MiniCRUD.Domain.Models;
 
 namespace MiniCRUD.API.Controllers;
@@ -87,14 +88,31 @@ public class UsersController : ControllerBase
             await using var transaction = await _dbContext.Database.BeginTransactionAsync(ct);
             try
             {
-                await _dbContext.Users.AddAsync(user, ct);
+                if (String.IsNullOrWhiteSpace(user.Login) || String.IsNullOrWhiteSpace(user.PasswordHash))
+                    return BadRequest();
+
+                var found = await _dbContext.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == user.Id, ct);
+                if (found != null) return BadRequest();
+
+                var found2 = await _dbContext.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Login == user.Login, ct);
+                if (found2 != null) return BadRequest();
+
+                var newUser = BogusGenerator.GenUser();
+                newUser.Login = user.Login;
+                newUser.PasswordHash = user.PasswordHash;
+
+                await _dbContext.Users.AddAsync(newUser, ct);
                 await _dbContext.SaveChangesAsync(ct);
 
-                //TODO: validation?
+                //TODO: fluent validation?
 
                 await transaction.CommitAsync(ct);
 
-                return Ok();
+                return Ok(newUser);
             }
             catch (Exception)
             {
