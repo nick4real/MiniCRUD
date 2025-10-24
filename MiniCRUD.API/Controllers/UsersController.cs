@@ -6,7 +6,7 @@ using MiniCRUD.Domain.Models;
 namespace MiniCRUD.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
