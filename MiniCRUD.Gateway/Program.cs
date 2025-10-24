@@ -15,8 +15,14 @@ void ConfigureReverseProxy()
     {
         var clusterName = cluster.Key.Replace("-cluster", string.Empty);
 
+        if (!builder.Environment.IsDevelopment())
+        {
+            clusterName = clusterName.Replace('-', '_');
+        }
+
         var tmp2 = builder.Configuration.GetSection($"ReverseProxy:Clusters:{cluster.Key}:Destinations:destination-1:Address");
-        var destinationUrl2 = Environment.GetEnvironmentVariable($"services__{clusterName}__http__0");
+        var destinationUrl2 = Environment.GetEnvironmentVariable($"services__{clusterName}__http__0")!;
+
         tmp2.Value = destinationUrl2;
     }
 }

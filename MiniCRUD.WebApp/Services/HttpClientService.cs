@@ -16,7 +16,10 @@ public class HttpClientService
     public HttpClientService(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("services__minicrud-api__https__0") ?? throw new Exception("Empty URL"));
+
+        _httpClient.BaseAddress = new Uri(Environment.GetEnvironmentVariable("services__minicrud-api__http__0") 
+            ?? Environment.GetEnvironmentVariable("services__minicrud_api__http__0")
+            ?? throw new Exception("Empty URL"));
     }
     public async Task<Response<TResult>> GetAsync<TResult>(string relativeRoute)
     {
