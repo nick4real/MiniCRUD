@@ -11,7 +11,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseSqlServer(connectionString, o =>
     {
-        o.EnableRetryOnFailure();
+        //o.EnableRetryOnFailure();
     });
 });
 
