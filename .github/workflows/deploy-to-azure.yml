@@ -95,6 +95,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: minicrud-gateway
+          app-name: minicrud
           publish-profile: ${{ secrets.AZURE_GATEWAY_PUBLISH_PROFILE }}
           package: ./MiniCRUD.Gateway/publish
