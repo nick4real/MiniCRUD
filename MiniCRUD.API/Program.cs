@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using MiniCRUD.API.Infrastructure;
 
@@ -22,29 +23,34 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseForwardedHeaders();
-
-if (app.Environment.IsProduction())
+app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    app.Use(async (context, next) =>
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost,
+
+    // Only use 1 hop in Azure
+    ForwardLimit = 1
+});
+
+app.Use(async (context, next) =>
+{
+    // Fix for scheme
+    var forwardedProto = context.Request.Headers["X-Forwarded-Proto"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(forwardedProto))
     {
-        // Fix for scheme
-        var forwardedProto = context.Request.Headers["X-Forwarded-Proto"].FirstOrDefault();
-        if (!string.IsNullOrEmpty(forwardedProto))
-        {
-            context.Request.Scheme = forwardedProto;
-        }
+        context.Request.Scheme = forwardedProto;
+    }
 
-        // Fix for host
-        var forwardedHost = context.Request.Headers["X-Forwarded-Host"].FirstOrDefault();
-        if (!string.IsNullOrEmpty(forwardedHost))
-        {
-            context.Request.Host = new HostString(forwardedHost);
-        }
+    // Fix for host
+    var forwardedHost = context.Request.Headers["X-Forwarded-Host"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(forwardedHost))
+    {
+        context.Request.Host = new HostString(forwardedHost);
+    }
 
-        await next();
-    });
-}
+    await next();
+});
 
 app.MapDefaultEndpoints();
 
