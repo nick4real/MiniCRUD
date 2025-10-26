@@ -1,0 +1,138 @@
+﻿@page "/products"
+@inject HttpClientService _client;
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (_products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _products)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>
+                        <input type="text" @bind-value="@product.Name" />
+                    </td>
+                    <td>
+                        <input type="text" @bind-value="@product.Description" />
+                    </td>
+                    <td>
+                        <input type="number" @bind-value="@product.Price" />
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" style="width:60px; height:60px" @onclick=@(async () => await UpdateProduct(product))>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                            </svg>
+                        </button>
+                        <button class="btn btn-primary" style="width:60px; height:60px" @onclick=@(async () => await DeleteProduct(product.Id))>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td>Create new product: </td>
+                <td>
+                    <input type="text" @bind-value=newName placeholder="Product name..." />
+                </td>
+                <td>
+                    <input type="text" @bind-value=newDescription placeholder="Product description..." />
+                </td>
+                <td>
+                    <input type="number" @bind-value=newPrice />
+                </td>
+                <td>
+                    <button @onclick=CreateProduct class="btn btn-primary" style="width:60px; height:60px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Product> _products;
+
+    private string newName { get; set; } = string.Empty;
+    private string newDescription { get; set; } = string.Empty;
+    private decimal newPrice { get; set; }
+
+    private async Task UpdateList()
+    {
+        var response = await _client.GetAsync<List<Product>>("products");
+        if (response.IsSuccess)
+            _products = response.Data!;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateList();
+    }
+
+    private async Task CreateProduct()
+    {
+        if (String.IsNullOrWhiteSpace(newName) || String.IsNullOrWhiteSpace(newDescription))
+            return;
+
+        var product = new Product()
+        { 
+            Id = Guid.NewGuid(),
+            Name = newName,
+            Description = newDescription,
+            Price = newPrice
+        };
+
+        var response = await _client.PostAsync<Product, Product>("products", product);
+        if (response.IsSuccess)
+        {
+            _products.Add(response.Data!);
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateProduct(Product productArg)
+    {
+        if (String.IsNullOrWhiteSpace(productArg.Name) 
+        || String.IsNullOrWhiteSpace(productArg.Description))
+            return;
+
+        var response = await _client.PutAsync<object, Product>("products", productArg);
+        StateHasChanged();
+    }
+
+    private async Task DeleteProduct(Guid id)
+    {
+        var response = await _client.DeleteAsync<object>($"products/{id}");
+        var index = _products.FindIndex(u => u.Id == id);
+        _products.RemoveAt(index);
+
+        StateHasChanged();
+    }
+}

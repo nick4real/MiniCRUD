@@ -15,5 +15,16 @@ namespace MiniCRUD.API.Services
 
             return user_f.Generate();
         }
+
+        public static Product GenProduct()
+        {
+            var product_f = new Faker<Product>()
+                .RuleFor(p => p.Id, f => Guid.NewGuid())
+                .RuleFor(p => p.Name, f => f.Commerce.ProductName())
+                .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
+                .RuleFor(p => p.Price, f => f.Random.Decimal(1, 1000));
+
+            return product_f.Generate();
+        }
     }
 }
