@@ -20,6 +20,8 @@ else
                 <th>Login</th>
                 <th>Password</th>
                 <th>Avatar</th>
+                <th>Email</th>
+                <th>Last IP</th>
                 <th></th>
             </tr>
         </thead>
@@ -36,6 +38,12 @@ else
                     </td>
                     <td>
                         <img src="@user.AvatarUrl" alt="avatar" style="width:64px" />
+                    </td>
+                    <td>
+                        <input style="width:300px" type="text" @bind-value="@user.Email" />
+                    </td>
+                    <td>
+                        @user.LastKnownIP
                     </td>
                     <td>
                         <button class="btn btn-primary" style="width:60px; height:60px" @onclick=@(async () => await UpdateUser(user))>
@@ -64,6 +72,13 @@ else
                 <td>
                     
                 </td>
+                
+                <td>
+                    <input style="width:300px" type="text" @bind-value="newEmail" placeholder="User email..." />
+                </td>
+                <td>
+                    
+                </td>
                 <td>
                     <button @onclick=CreateUser class="btn btn-primary" style="width:60px; height:60px">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
@@ -82,6 +97,7 @@ else
 
     private string newLogin { get; set; } = string.Empty;
     private string newPassword { get; set; } = string.Empty;
+    private string newEmail { get; set; } = string.Empty;
 
     private async Task UpdateList()
     {
@@ -104,7 +120,8 @@ else
         { 
             Id = Guid.NewGuid(),
             Login = newLogin,
-            PasswordHash = newPassword
+            PasswordHash = newPassword,
+            Email = newEmail
         };
 
         var response = await _client.PostAsync<User, User>("users", user);
@@ -117,7 +134,10 @@ else
 
     private async Task UpdateUser(User userArg)
     {
-        if (String.IsNullOrWhiteSpace(userArg.Login) || String.IsNullOrWhiteSpace(userArg.PasswordHash))
+        if (String.IsNullOrWhiteSpace(userArg.Login) 
+        || String.IsNullOrWhiteSpace(userArg.PasswordHash)
+        || String.IsNullOrWhiteSpace(userArg.Email)
+        )
             return;
 
         var response = await _client.PutAsync<object, User>("users", userArg);

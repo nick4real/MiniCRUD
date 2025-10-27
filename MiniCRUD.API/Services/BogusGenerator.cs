@@ -11,7 +11,9 @@ namespace MiniCRUD.API.Services
                 .RuleFor(u => u.Id, f => Guid.NewGuid())
                 .RuleFor(u => u.Login, f => f.Internet.UserName())
                 .RuleFor(u => u.PasswordHash, f => f.Internet.Password())
-                .RuleFor(u => u.AvatarUrl, f => f.Internet.Avatar());
+                .RuleFor(u => u.AvatarUrl, f => f.Internet.Avatar())
+                .RuleFor(u => u.Email, f => f.Internet.Email())
+                .RuleFor(u => u.LastKnownIP, f => f.Internet.Ip());
 
             return user_f.Generate();
         }
