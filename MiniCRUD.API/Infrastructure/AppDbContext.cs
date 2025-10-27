@@ -23,7 +23,9 @@ namespace MiniCRUD.API.Infrastructure
                         .RuleFor(p => p.Id, f => Guid.NewGuid())
                         .RuleFor(p => p.Login, f => f.Internet.UserName())
                         .RuleFor(p => p.PasswordHash, f => f.Internet.Password())
-                        .RuleFor(p => p.AvatarUrl, f => f.Internet.Avatar());
+                        .RuleFor(p => p.AvatarUrl, f => f.Internet.Avatar())
+                        .RuleFor(u => u.Email, f => f.Internet.Email())
+                        .RuleFor(u => u.LastKnownIP, f => f.Internet.Ip());
 
                     var users = user_f.Generate(20);
 

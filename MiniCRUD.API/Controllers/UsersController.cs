@@ -88,7 +88,10 @@ public class UsersController : ControllerBase
             await using var transaction = await _dbContext.Database.BeginTransactionAsync(ct);
             try
             {
-                if (String.IsNullOrWhiteSpace(user.Login) || String.IsNullOrWhiteSpace(user.PasswordHash))
+                if (String.IsNullOrWhiteSpace(user.Login) 
+                || String.IsNullOrWhiteSpace(user.PasswordHash)
+                || String.IsNullOrWhiteSpace(user.Email)
+                )
                     return BadRequest();
 
                 var found = await _dbContext.Users
@@ -104,6 +107,7 @@ public class UsersController : ControllerBase
                 var newUser = BogusGenerator.GenUser();
                 newUser.Login = user.Login;
                 newUser.PasswordHash = user.PasswordHash;
+                newUser.Email = user.Email;
 
                 await _dbContext.Users.AddAsync(newUser, ct);
                 await _dbContext.SaveChangesAsync(ct);
@@ -120,8 +124,6 @@ public class UsersController : ControllerBase
                 throw;
             }
         });
-
-        
     }
 
     [HttpPut]
@@ -133,6 +135,9 @@ public class UsersController : ControllerBase
             await using var transaction = await _dbContext.Database.BeginTransactionAsync(ct);
             try
             {
+                if (!user.Email.Contains('@')) 
+                    return BadRequest();
+
                 var found = await _dbContext.Users.FirstAsync(u => u.Id == user.Id, ct);
                 if (found == null)
                 {
@@ -142,7 +147,7 @@ public class UsersController : ControllerBase
 
                 found.Login = user.Login;
                 found.PasswordHash = user.PasswordHash;
-                found.AvatarUrl = user.AvatarUrl;
+                found.Email = user.Email;
 
                 await _dbContext.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
