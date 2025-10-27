@@ -22,6 +22,8 @@ namespace MiniCRUD.API.Services
                 .RuleFor(p => p.Id, f => Guid.NewGuid())
                 .RuleFor(p => p.Name, f => f.Commerce.ProductName())
                 .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
+                .RuleFor(p => p.Adjective, f => f.Commerce.ProductAdjective())
+                .RuleFor(p => p.Material, f => f.Commerce.ProductMaterial())
                 .RuleFor(p => p.Price, f => f.Random.Decimal(1, 1000));
 
             return product_f.Generate();
