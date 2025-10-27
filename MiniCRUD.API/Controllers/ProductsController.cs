@@ -89,7 +89,10 @@ public class ProductsController : ControllerBase
             try
             {
                 if (String.IsNullOrWhiteSpace(product.Name) 
-                || String.IsNullOrWhiteSpace(product.Description))
+                || String.IsNullOrWhiteSpace(product.Description)
+                || String.IsNullOrWhiteSpace(product.Adjective)
+                || String.IsNullOrWhiteSpace(product.Material)
+                )
                     return BadRequest();
 
                 var found = await _dbContext.Products
@@ -137,6 +140,8 @@ public class ProductsController : ControllerBase
                 found.Name = product.Name;
                 found.Description = product.Description;
                 found.Price = product.Price;
+                found.Adjective = product.Adjective;
+                found.Material = product.Material;
 
                 await _dbContext.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
